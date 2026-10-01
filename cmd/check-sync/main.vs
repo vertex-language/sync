@@ -82,6 +82,20 @@ func main() async -> int32 {
     }
     check(slept == 7, "a task on the pool sleeps and carries on there")
 
+    // Mutex check
+    let mu = sync.Mutex()
+    var count = 0
+    mu.withLock { count += 10 }
+    check(count == 10, "Mutex withLock works")
+
+    // Thread check
+    var threadRan = false
+    let t = sync.Thread.spawn {
+        threadRan = true
+    }
+    t.join()
+    check(threadRan, "sync.Thread.spawn and join work")
+
     if failures == 0 {
         print("ALL SYNC CHECKS PASSED")
         return 0
